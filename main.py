@@ -1,9 +1,14 @@
+import sys
 from flask import Flask, render_template
 import numpy as np
 from dotenv import load_dotenv
 from os import getenv
 import mysql.connector
 from mysql.connector import Error
+import inspect
+import signal
+
+
 app = Flask(__name__)
 
 
@@ -12,6 +17,7 @@ def index():
     numpy_version = False
     env_correct = False
     db_connection_successful = False
+    is_graceful = False
 
 
     # Check for numpy
@@ -28,12 +34,21 @@ def index():
         # Check for database (docker compose)
         if env_correct == True:
             db_connection_successful = check_if_database_is_connected()
+        
+        # Check for graceful shutdown
+        if db_connection_successful == True:
+            print("Checking for graceful shutdown")
+            print(check_if_graceful_shutdown_is_implemented())
+            is_graceful = check_if_graceful_shutdown_is_implemented()
 
     # Returns the page:
     return render_template("index.html",
                            numpy_version=numpy_version,
                            env_correct=env_correct,
-                           db_connection_successful=db_connection_successful)
+                           db_connection_successful=db_connection_successful,
+                           is_graceful=is_graceful
+            )
+    
 
 
 def check_if_numpy_version_is_correct():
@@ -44,7 +59,20 @@ def check_if_numpy_version_is_correct():
     except Exception as error:
         print(error)
         return False
+    
 
+def check_if_graceful_shutdown_is_implemented():
+    signals = [2, 15] 
+    signal_handlers = [signal.getsignal(sig) for sig in signals] 
+    for handler in signal_handlers: 
+        if handler and handler.__name__ == 'graceful_shutdown':
+            source_code = inspect.getsource(handler) 
+            if "connection.close" in source_code: 
+                return True
+    return False
+
+def graceful_shutdown(signal, frame):
+    pass # Placeholder for the graceful shutdown function
 
 def check_if_database_is_connected():
     MYSQL_DATABASE = getenv('MYSQL_DATABASE')
@@ -84,6 +112,8 @@ def check_if_database_is_connected():
 
 
 
+signal.signal(2, graceful_shutdown) # Register graceful_shutdown as the signal handler for SIGINT syscalls
+signal.signal(15, graceful_shutdown) # Register graceful_shutdown as the signal handler for SIGTERM syscalls
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

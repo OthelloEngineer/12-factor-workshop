@@ -26,7 +26,7 @@
                 <br>
                 <br>
                 How could we prevent this in the future? Is there a type of requirements file for Python which can be
-                utilized? (It might be necessary for a later exercise)
+                utilized? (It might be necessary for a later exercise) blah blah blah
             </p>
         </section>
 
@@ -99,6 +99,31 @@
                 <span class="checkmark checkmark-wrong" id="checker1">✖</span>
                 {% endif %}
             </div>
+        </section>
+        {% endif %}
+        <p> test</p>
+
+        {% if db_connection_successful == True %}
+        <section class="lore">
+            <h2>Exercise 4</h2>
+            <p>
+                We want to gracefully shutdown our application when we receive a `SIGTERM` signal. This is important when the application is connected to a database and unfortunatly crashes.
+                 We want to make sure that it closes the connection to the database before shutting down the application.
+                <br>
+                To complete this exercise, you will have to implement a graceful shutdown in the `app.py` file. 
+                The hook is already registered for you in the code base. You only need to implement the shutdown hook in the `app.py` file.
+            </p>
+        </section>
+        <section class="checkers">
+            <h2 class="checker-status-text">Graceful Shutdown Checker</h2>
+            <div class="checker">
+                {% if is_graceful == True %}
+                <span class="checkmark checkmark-correct" id="checker1">✔</span>
+                {% else %}
+                <span class="checkmark checkmark-wrong" id="checker1">✖</span>
+                {% endif %}
+            </div>
+
         </section>
         {% endif %}
 
