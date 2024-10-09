@@ -6,11 +6,18 @@ services:
     ports:
       - "5000:5000"
     environment:
-      SOME_ENVIRONMENT_VARIABLE: SOME_VALUE # TODO
+      PYTHONUNBUFFERED: 1
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+      MYSQL_HOST: database
 
   database:
-    image: # TODO
+    image: mysql:8.0
     environment:
-      SOME_ENVIRONMENT_VARIABLE: SOME_VALUE # TODO
+      MYSQL_ROOT_PASSWORD: myrootpassword
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
     ports:
-      - "XXXXX:XXXXX" # TODO
+      - "3306:3306"

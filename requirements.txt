@@ -1,1 +1,5 @@
 # Hmmm, what might this file be for? It seems the Dockerfile requires it...
+numpy==1.23
+Flask
+python-dotenv
+mysql-connector-python
