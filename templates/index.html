@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SDU Software Engineering Student Counsel">
+    <meta name="keywords" content="SDU, Software Engineering, Student Counsel, DnD, Denmark">
+    <meta name="author" content="SDU Student Counsel">
+    <title>SDU Student Counsel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <img src="{{ url_for('static', filename='images/enigma_logo.svg') }}" alt="Enigma Logo" class="logo">
+            <h1 class="title">Welcome to the Enigma website!</h1>
+        </header>
+
+        <section class="lore">
+            <h2>Exercise 1</h2>
+            <p>
+                It seems there is an issue with the Numpy version and doesn't work with the newest version. Please find
+                out why this is and resolve it by using the correct version. Check the console for errors
+                <br>
+                <br>
+                How could we prevent this in the future? Is there a type of requirements file for Python which can be
+                utilized? (It might be necessary for a later exercise)
+            </p>
+        </section>
+
+        <section class="checkers">
+            <h2 class="checker-status-text">Numpy Checker</h2>
+            <div class="checker">
+                {% if numpy_version == True %}
+                <span class="checkmark checkmark-correct" id="checker1">✔</span>
+                {% else %}
+                <span class="checkmark checkmark-wrong" id="checker1">✖</span>
+                {% endif %}
+            </div>
+        </section>
+
+
+        {% if numpy_version == True %}
+        <section class="lore">
+            <h2>Exercise 2</h2>
+            <p>
+                In this exercise we want to read environment variables. We want to enable `DEBUG` mode on our
+                development environment, but we don't want it to be enabled on the production environment.
+                <br>
+                <br>
+                We can define environment variables in our terminal, but wouldn't it be smarter to use a file for it?
+            </p>
+        </section>
+
+        <section class="checkers">
+            <h2 class="checker-status-text">ENV Checker</h2>
+            <div class="checker">
+                {% if env_correct == True %}
+                <span class="checkmark checkmark-correct" id="checker1">✔</span>
+                {% else %}
+                <span class="checkmark checkmark-wrong" id="checker1">✖</span>
+                {% endif %}
+            </div>
+        </section>
+        {% endif %}
+
+
+        {% if env_correct == True %}
+        <section class="lore">
+            <h2>Exercise 3</h2>
+            <p>
+                We want to connect our Python application with a MySQL database, but we don't want to setup a database
+                on each production server. Instead, we would like to use Docker Compose for handling this. With Docker
+                Compose we can easily deploy the database after we've configured it, which enables us to easily deploy
+                the system on different environments.
+                <br>
+                <br>
+                To complete this exercise, you will have to configure the docker compose file from guides on how to
+                setup MySQL. You should <b>NOT</b> install the database on your system, but instead have docker deploy
+                it through a docker compose file.<br>
+                Please follow guides like <a target="_blank"
+                    href="https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-18-04">this
+                    one</a> on how you originally would setup a MySQL server up. Use the information to configure the
+                Docker Compose file for connecting the Python application with the database.
+                <br>
+                <br>
+                You can use the existing `docker-compose.yml` file as a starting point.
+            </p>
+        </section>
+
+        <section class="checkers">
+            <h2 class="checker-status-text">Database Checker</h2>
+            <div class="checker">
+                {% if db_connection_successful == True %}
+                <span class="checkmark checkmark-correct" id="checker1">✔</span>
+                {% else %}
+                <span class="checkmark checkmark-wrong" id="checker1">✖</span>
+                {% endif %}
+            </div>
+        </section>
+        {% endif %}
+
+
+        <footer class="footer">
+            <p>&copy; 2024 Enigma. All engineers reserved.</p>
+        </footer>
+    </div>
+</body>
+
+</html>
