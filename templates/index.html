@@ -101,14 +101,13 @@
             </div>
         </section>
         {% endif %}
-        <p> test</p>
 
         {% if db_connection_successful == True %}
         <section class="lore">
             <h2>Exercise 4</h2>
             <p>
                 We want to gracefully shutdown our application when we receive a `SIGTERM` signal. This is important when the application is connected to a database and unfortunatly crashes.
-                 We want to make sure that it closes the connection to the database before shutting down the application.
+                We want to make sure that it closes the connection to the database before shutting down the application.
                 <br>
                 To complete this exercise, you will have to implement a graceful shutdown in the `app.py` file. 
                 The hook is already registered for you in the code base. You only need to implement the shutdown hook in the `app.py` file.
