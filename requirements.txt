@@ -3,3 +3,4 @@ numpy==1.23
 Flask
 python-dotenv
 mysql-connector-python
+python-json-logger

@@ -1,4 +1,6 @@
+import logging
 import sys
+import time
 from flask import Flask, render_template
 import numpy as np
 from dotenv import load_dotenv
@@ -7,40 +9,61 @@ import mysql.connector
 from mysql.connector import Error
 import inspect
 import signal
-
+import logger
+import threading
 
 app = Flask(__name__)
 
+json_logger = logger.logger
 
+
+logger.start_random_logs()
+
+times_loaded = 0
 @app.route('/')
 def index():
+    global times_loaded
+    start_time = time.time()
+    times_loaded += 1
+    
+    if times_loaded > 1:
+        json_logger.error("The page was loaded more than once.")
+    
     numpy_version = False
     env_correct = False
     db_connection_successful = False
     is_graceful = False
-
+    json_logger.log(logging.INFO, "Checking for numpy")
 
     # Check for numpy
     numpy_version = check_if_numpy_version_is_correct()
-
+    json_logger.warning("Numpy version: " + str(numpy_version))
 
     # Check for env
     if numpy_version == True:
         load_dotenv()
+        json_logger.log(logging.INFO, "Checking for env")
         if getenv('DEBUG').lower() == "true":
+            json_logger.log(logging.INFO, "DEBUG is set to True")
             env_correct = True
 
 
         # Check for database (docker compose)
         if env_correct == True:
+            json_logger.log(logging.INFO, "Checking for database connection")
             db_connection_successful = check_if_database_is_connected()
+            json_logger.warning("Database connection successful: " + str(db_connection_successful))
         
         # Check for graceful shutdown
         if db_connection_successful == True:
-            print("Checking for graceful shutdown")
+            json_logger.log(logging.INFO, "Checking for graceful shutdown")
             print(check_if_graceful_shutdown_is_implemented())
             is_graceful = check_if_graceful_shutdown_is_implemented()
+            json_logger.warning("Graceful shutdown implemented: " + str(is_graceful))
 
+    end_time = time.time()
+    json_logger.info("Page loaded in " + str(end_time - start_time) + " seconds.")
+    
     # Returns the page:
     return render_template("index.html",
                            numpy_version=numpy_version,
