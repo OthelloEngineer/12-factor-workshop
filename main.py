@@ -19,15 +19,19 @@ def index():
 
 
     # Check for env
-    if numpy_version == True:
-        load_dotenv()
-        if getenv('DEBUG').lower() == "true":
-            env_correct = True
+    if numpy_version is True:
+        try:
+            load_dotenv()
+            if getenv('DEBUG').lower() == "true":
+                env_correct = True
 
 
-        # Check for database (docker compose)
-        if env_correct == True:
-            db_connection_successful = check_if_database_is_connected()
+            # Check for database (docker compose)
+            if env_correct is True:
+                db_connection_successful = check_if_database_is_connected()
+
+        except Exception:
+            pass
 
     # Returns the page:
     return render_template("index.html",
@@ -39,7 +43,7 @@ def index():
 def check_if_numpy_version_is_correct():
     try:
         _ = np.typeDict['float64']
-        print("Numpt is the correct version.")
+        print("Numpy is the correct version.")
         return True
     except Exception as error:
         print(error)
