@@ -95,13 +95,7 @@ def check_if_graceful_shutdown_is_implemented():
 
 
 def graceful_shutdown(signal, frame):
-    print("Received shutdown signal, shutting down gracefully...")
-    global connection
-    if connection is not None and connection.is_connected():
-        connection.close()
-        print("Database connection closed.")
-    sys.exit(0)
-
+    pass
 
 def check_if_database_is_connected():
     MYSQL_DATABASE = getenv('MYSQL_DATABASE')
