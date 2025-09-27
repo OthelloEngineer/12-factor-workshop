@@ -1,3 +1,6 @@
+import inspect
+import signal
+import sys
 from flask import Flask, render_template
 import numpy as np
 from dotenv import load_dotenv
@@ -12,6 +15,7 @@ def index():
     numpy_version = False
     env_correct = False
     db_connection_successful = False
+    is_graceful = False
 
 
     # Check for numpy
@@ -30,6 +34,9 @@ def index():
             if env_correct is True:
                 db_connection_successful = check_if_database_is_connected()
 
+            if db_connection_successful is True:
+                check_if_graceful_shutdown_is_implemented()
+                is_graceful = check_if_graceful_shutdown_is_implemented()
         except Exception:
             pass
 
@@ -37,7 +44,8 @@ def index():
     return render_template("index.html",
                            numpy_version=numpy_version,
                            env_correct=env_correct,
-                           db_connection_successful=db_connection_successful)
+                           db_connection_successful=db_connection_successful,
+                           is_graceful=is_graceful)
 
 
 def check_if_numpy_version_is_correct():
@@ -49,8 +57,10 @@ def check_if_numpy_version_is_correct():
         print(error)
         return False
 
+connection = None
 
 def check_if_database_is_connected():
+    global connection
     MYSQL_DATABASE = getenv('MYSQL_DATABASE')
     MYSQL_PORT = 3306
     MYSQL_HOST = getenv('MYSQL_HOST')
@@ -86,6 +96,23 @@ def check_if_database_is_connected():
         if 'connection' in locals() and connection.is_connected():
             connection.close()
 
+def check_if_graceful_shutdown_is_implemented():
+    signals = [2, 15]
+    signal_handlers = [signal.getsignal(sig) for sig in signals]
+    for handler in signal_handlers:
+        if handler and handler.__name__ == 'graceful_shutdown':
+            source_code = inspect.getsource(handler)
+            if "connection.close" in source_code:
+                return True
+    return False
+
+
+def graceful_shutdown(signal, frame):
+    print("Graceful shutdown initiated.")
+
+
+signal.signal(2, graceful_shutdown)  # Register graceful_shutdown as the signal handler for SIGINT syscalls
+signal.signal(15, graceful_shutdown)  # Register graceful_shutdown as the signal handler for SIGTERM syscalls
 
 
 
