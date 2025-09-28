@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: 'default-loki-dashboards'
+    orgId: 1
+    folder: 'Loki Dashboards'
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /etc/grafana/provisioning/dashboard_files

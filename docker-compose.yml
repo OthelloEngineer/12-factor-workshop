@@ -34,6 +34,8 @@ services:
     volumes:
       # directory must be created first, with uid:gid 10001:10001
       - ./volumes/loki:/loki
+    depends_on:
+      - promtail
 
   promtail:
     image: grafana/promtail:2.6.1
@@ -44,6 +46,17 @@ services:
       # to read container labels and logs
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/containers:/var/lib/docker/containers
+    depends_on:
+      - web
+      - database
+
+  prometheus:
+    image: prom/prometheus:v2.37.0
+    ports:
+      - "9090:9090"
+    volumes:
+      # custom config to scrape loki
+      - ./loki/prometheus-config.yaml:/etc/prometheus/prometheus.yml
 
   # will be available at http://127.0.0.1:3000
   # default credentials: admin/admin
@@ -51,8 +64,13 @@ services:
     image: grafana/grafana:9.2.2
     ports:
       - "3000:3000"
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
     volumes:
       # directory must be created first, with uid:gid 472:472
       - ./volumes/grafana:/var/lib/grafana
       # automatically configure the loki datasource
       - ./loki/grafana/provisioning/:/etc/grafana/provisioning/
+    depends_on:
+      - loki
+      - prometheus
